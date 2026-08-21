@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dröjsmålsränta-kalkylator — gratis | PaidFast</title>
+<meta name="description" content="Räkna ut dröjsmålsränta på obetalda fakturor på sekunder. Referensräntan 2,00 % (juli–dec 2026) + 8 procentenheter = 10,00 %. Gratis, i webbläsaren.">
+<meta property="og:title" content="Dröjsmålsränta-kalkylator — gratis">
+<meta property="og:description" content="Hur mycket får du ta ut när kunden betalar sent? Räkna ut det på sekunder och få en färdig mening att klistra in.">
+<meta property="og:image" content="https://wnordbergg.github.io/paidfast/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://wnordbergg.github.io/paidfast/sv/ranta-kalkylator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>">
+<style>
+  :root{--bg:#fafaf8;--card:#fff;--ink:#1a2332;--muted:#5b6472;--accent:#0e7a4d;--accent-dark:#0a5c3a;--line:#e4e6ea;--ok-bg:#ecfdf5;--ok-line:#a7f3d0}
+  @media(prefers-color-scheme:dark){:root{--bg:#12151a;--card:#1b2027;--ink:#e8eaf0;--muted:#9aa3b2;--line:#2a313b;--ok-bg:#0d2b1e;--ok-line:#14532d}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px}
+  header{padding:26px 0 6px}.logo{font-weight:800;font-size:19px;color:var(--accent);text-decoration:none}
+  h1{font-size:clamp(25px,5vw,36px);letter-spacing:-.02em;line-height:1.2;margin:16px 0 10px}
+  .sub{color:var(--muted);font-size:16.5px;margin:0 0 20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.04em}
+  label:first-child{margin-top:0}
+  input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:15px;background:var(--bg);color:var(--ink)}
+  input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;width:100%}
+  .btn:hover{background:var(--accent-dark)}
+  .btn.secondary{background:transparent;color:var(--accent);border:1.5px solid var(--accent);width:auto;padding:9px 18px;font-size:14px;margin-top:10px}
+  #result{display:none;margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
+  .big{font-size:30px;font-weight:800;color:var(--accent);margin:4px 0}
+  textarea{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.6;white-space:pre-wrap;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+  .copied{color:var(--accent);font-weight:600;font-size:13px;margin-left:10px;display:none}
+  details{border-bottom:1px solid var(--line);padding:13px 2px}
+  details summary{cursor:pointer;font-weight:600;font-size:15px}
+  details p,details li{color:var(--muted);font-size:14.5px;margin:10px 0 2px}
+  .note{background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:10px;padding:12px 16px;font-size:14px;margin-top:16px}
+  footer{color:var(--muted);font-size:13px;padding:26px 0 40px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><a class="logo" href="../index.html">💸 PaidFast</a></header>
+
+<h1>Dröjsmålsränta-kalkylator</h1>
+<p class="sub">Hur mycket till får du ta med på den obetalda fakturan? Räkna ut det på sekunder — och säg det i skrift.</p>
+
+<div class="card">
+  <div class="row">
+    <div style="flex:2"><label>Fakturabelopp</label><input type="number" id="amount" placeholder="24000" min="0" step="0.01"></div>
+    <div style="flex:1"><label>Valuta</label><select id="cur"><option>SEK</option><option>EUR</option><option>USD</option></select></div>
+  </div>
+  <div class="row">
+    <div><label>Förfallodatum</label><input type="date" id="due"></div>
+    <div style="flex:0 0 120px"><label>Ränta % / år</label><input type="number" id="rate" value="10" step="0.01"></div>
+    <div style="flex:0 0 150px"><label>Påminnelseavgift</label><input type="number" id="fee" placeholder="60" min="0" step="0.01"></div>
+  </div>
+  <button class="btn" id="calcBtn">Beräkna ränta →</button>
+  <div id="result">
+    <p style="margin:0;color:var(--muted);font-size:14px" id="daysLine"></p>
+    <div class="big" id="totalLine"></div>
+    <p style="margin:0;font-size:14px;color:var(--muted)" id="breakdown"></p>
+    <label style="text-transform:none;font-size:14px;margin-top:16px">Klart att klistra in i påminnelsen:</label>
+    <textarea id="sentence" readonly></textarea>
+    <button class="btn secondary" id="copyBtn">📋 Kopiera text</button><span class="copied" id="copiedMsg">Kopierat!</span>
+    <div class="note">Nästa steg: <a href="./">skapa hela påminnelsen gratis →</a></div>
+  </div>
+</div>
+
+<h2 style="font-size:21px;margin-top:30px">Vad gäller?</h2>
+<details open><summary>Dröjsmålsränta (räntelagen)</summary>
+<p>Dröjsmålsräntan = Riksbankens referensränta <b>+ 8 procentenheter</b> och löper automatiskt från dagen efter förfallodagen — du behöver inte ha avtalat särskilt om den. Referensräntan är <b>2,00&nbsp;%</b> för perioden 1 juli – 31 december 2026 (källa: Sveriges Riksbank) → <b>10,00&nbsp;%</b> just nu. Ändra i fältet ovan om perioden för din beräkning ligger i ett annat halvår.</p></details>
+<details open><summary>Påminnelseavgift & faktureringsavgift</summary>
+<p>Vid sen betalning får du som huvudregel debitera en rimlig påminnelseavgift (vanligen ca 60 kr) samt vid inkasso lagstadgad ersättning för inkassokostnader (t.ex. 180 kr för mindre fordringar). Avgifter ska vara rimliga och helst stå i dina villkor.</p></details>
+<details open><summary>Efter slutpåminnelsen</summary>
+<p>Betalas det inte trots slutpåminnelse: överlämna till inkasso och därefter Kronofogden (betalföreläggande). Se till att underlagen finns sparade — avtal, orderbekräftelser och korrespondens.</p></details>
+<p style="font-size:12.5px;color:var(--muted)">Allmän information, inte juridisk rådgivning. Verifiera aktuell ränta för större fordringar.</p>
+
+<footer>PaidFast · gratis verktyg för frilansare & småföretag · <a href="./">påminnelsegeneratorn</a> · <a href="../index.html">English</a></footer>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function count(k){try{var x=new XMLHttpRequest();x.open("GET","https://abacus.jasoncameron.dev/hit/paidfast-site/"+k,true);x.responseType="json";x.send()}catch(e){}}
+  count("svcalc");
+  var t=new Date();t.setDate(t.getDate()-21);
+  $("due").value=t.toISOString().slice(0,10);
+  $("calcBtn").addEventListener("click",function(){
+    var amt=parseFloat($("amount").value), rate=parseFloat($("rate").value)/100,
+        fee=parseFloat($("fee").value)||0, due=$("due").value;
+    if(!amt||!due){$("amount").focus();return}
+    var d=new Date(due+"T00:00:00"), now=new Date(); now.setHours(0,0,0,0);
+    var days=Math.max(Math.round((now-d)/86400000),0);
+    var interest=Math.round(amt*rate*(days/365)*100)/100;
+    var total=Math.round((amt+interest+fee)*100)/100;
+    var fmt=function(a){return new Intl.NumberFormat('sv-SE',{style:'currency',currency:$("cur").value}).format(a)};
+    var ds=d.toLocaleDateString('sv-SE',{year:'numeric',month:'long',day:'numeric'});
+    $("daysLine").textContent=days+" dagar efter förfallodagen ("+ds+")";
+    $("totalLine").textContent=fmt(total)+" totalt";
+    $("breakdown").textContent=fmt(amt)+" kapitalbelopp + "+fmt(interest)+" ränta ("+($("rate").value)+" % år)"+(fee?" + "+fmt(fee)+" avgift":"");
+    $("sentence").value="Enligt räntelagen löper dröjsmålsränta ("+($("rate").value)+" %) på faktura nr ____ från förfallodagen "+ds+". Per idag har "+fmt(interest)+" i ränta pålöpt"+(fee?" samt en påminnelseavgift om "+fmt(fee)+" debiterats":"")+". Totalt belopp att erlägga är "+fmt(total)+".";
+    $("result").style.display="block";
+    $("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+    count("svcalcdone");
+  });
+  $("copyBtn").addEventListener("click",function(){
+    $("sentence").select();
+    try{navigator.clipboard.writeText($("sentence").value)}catch(e){document.execCommand("copy")}
+    $("copiedMsg").style.display="inline";setTimeout(function(){$("copiedMsg").style.display="none"},2000);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Late Payment Interest Calculator — What Can You Charge?</title>
+<meta name="description" content="Calculate late-payment interest on unpaid invoices instantly. EU & Swedish statutory rates explained (reference rate + 8pp), US contract rates supported. Free, runs in your browser.">
+<meta property="og:title" content="Late Payment Interest Calculator — Free">
+<meta property="og:description" content="How much interest can you charge on a late-paying client? Calculate it in seconds, get a ready-to-send sentence.">
+<meta property="og:image" content="https://wnordbergg.github.io/paidfast/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://wnordbergg.github.io/paidfast/interest-calculator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>">
+<style>
+  :root{--bg:#fafaf8;--card:#fff;--ink:#1a2332;--muted:#5b6472;--accent:#0e7a4d;--accent-dark:#0a5c3a;--line:#e4e6ea;--ok-bg:#ecfdf5;--ok-line:#a7f3d0}
+  @media(prefers-color-scheme:dark){:root{--bg:#12151a;--card:#1b2027;--ink:#e8eaf0;--muted:#9aa3b2;--line:#2a313b;--ok-bg:#0d2b1e;--ok-line:#14532d}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px}
+  header{padding:26px 0 6px}.logo{font-weight:800;font-size:19px;color:var(--accent);text-decoration:none}
+  h1{font-size:clamp(25px,5vw,36px);letter-spacing:-.02em;line-height:1.2;margin:16px 0 10px}
+  .sub{color:var(--muted);font-size:16.5px;margin:0 0 20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.04em}
+  label:first-child{margin-top:0}
+  input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:15px;background:var(--bg);color:var(--ink)}
+  input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;width:100%}
+  .btn:hover{background:var(--accent-dark)}
+  .btn.secondary{background:transparent;color:var(--accent);border:1.5px solid var(--accent);width:auto;padding:9px 18px;font-size:14px;margin-top:10px}
+  #result{display:none;margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
+  .big{font-size:30px;font-weight:800;color:var(--accent);margin:4px 0}
+  textarea{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.6;white-space:pre-wrap;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+  .copied{color:var(--accent);font-weight:600;font-size:13px;margin-left:10px;display:none}
+  details{border-bottom:1px solid var(--line);padding:13px 2px}
+  details summary{cursor:pointer;font-weight:600;font-size:15px}
+  details p,details li{color:var(--muted);font-size:14.5px;margin:10px 0 2px}
+  .note{background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:10px;padding:12px 16px;font-size:14px;margin-top:16px}
+  footer{color:var(--muted);font-size:13px;padding:26px 0 40px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><a class="logo" href="index.html">💸 PaidFast</a></header>
+
+<h1>Late payment interest calculator</h1>
+<p class="sub">How much can you add to that overdue invoice? Do the math in seconds — then say it in writing.</p>
+
+<div class="card">
+  <div class="row">
+    <div style="flex:2"><label>Invoice amount</label><input type="number" id="amount" placeholder="2400" min="0" step="0.01"></div>
+    <div style="flex:1"><label>Currency</label><select id="cur"><option>USD</option><option>EUR</option><option>GBP</option><option>SEK</option></select></div>
+  </div>
+  <div class="row">
+    <div><label>Due date</label><input type="date" id="due"></div>
+    <div style="flex:0 0 120px"><label>Rate % p.a.</label><input type="number" id="rate" value="10" step="0.01"></div>
+    <div style="flex:0 0 140px"><label>Flat fee (opt.)</label><input type="number" id="fee" placeholder="40" min="0" step="0.01"></div>
+  </div>
+  <button class="btn" id="calcBtn">Calculate interest →</button>
+  <div id="result">
+    <p style="margin:0;color:var(--muted);font-size:14px" id="daysLine"></p>
+    <div class="big" id="totalLine"></div>
+    <p style="margin:0;font-size:14px;color:var(--muted)" id="breakdown"></p>
+    <label style="text-transform:none;font-size:14px;margin-top:16px">Paste-ready sentence for your reminder:</label>
+    <textarea id="sentence" readonly></textarea>
+    <button class="btn secondary" id="copyBtn">📋 Copy sentence</button><span class="copied" id="copiedMsg">Copied!</span>
+    <div class="note">Next step: put it in writing — <a href="index.html">generate the full reminder email free →</a></div>
+  </div>
+</div>
+
+<h2 style="font-size:21px;margin-top:30px">What rate applies to you?</h2>
+<details open><summary>European Union (commercial invoices)</summary>
+<p>Directive 2011/7/EU: statutory interest = European Central Bank main refinancing rate <b>+ 8 percentage points</b>, plus at least €40 in recovery costs — you don't need a contract clause, and interest accrues automatically from the day after the due date. With the ECB rate around 2%, that's roughly <b>~10% p.a.</b> Check the current ECB rate for the exact figure.</p></details>
+<details open><summary>Sweden</summary>
+<p>Dröjsmålsränta enligt räntelagen = Riksbankens referensränta <b>+ 8 procentenheter</b>. Referensräntan är <b>2,00&nbsp;%</b> för perioden 1 juli – 31 december 2026 (källa: Sveriges Riksbank) → <b>10,00&nbsp;%</b> just nu. Svenska versionen av kalkylatorn: <a href="sv/ranta-kalkylator.html">dröjsmålsränta-kalkylator →</a></p></details>
+<details open><summary>United States</summary>
+<p>No federal default rate — the interest you can charge comes from your <b>contract first</b>, then state law. If your invoice/terms state a monthly rate (commonly 1–1.5%/month), use that annualized. If nothing was agreed, courts may still award interest as damages — check your state's rules.</p></details>
+<p style="font-size:12.5px;color:var(--muted)">General information, not legal advice. Rates shown are editable defaults — always verify the current official rate for large claims.</p>
+
+<footer>PaidFast · free tools for freelancers &amp; small businesses · <a href="index.html">reminder generator</a> · <a href="templates.html">templates</a> · <a href="final-notice.html">final notice guide</a></footer>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function count(k){try{var x=new XMLHttpRequest();x.open("GET","https://abacus.jasoncameron.dev/hit/paidfast-site/"+k,true);x.responseType="json";x.send()}catch(e){}}
+  count("intcalc");
+  var t=new Date();t.setDate(t.getDate()-21);
+  $("due").value=t.toISOString().slice(0,10);
+  $("calcBtn").addEventListener("click",function(){
+    var amt=parseFloat($("amount").value), rate=parseFloat($("rate").value)/100,
+        fee=parseFloat($("fee").value)||0, due=$("due").value;
+    if(!amt||!due){$("amount").focus();return}
+    var d=new Date(due+"T00:00:00"), now=new Date(); now.setHours(0,0,0,0);
+    var days=Math.max(Math.round((now-d)/86400000),0);
+    var interest=Math.round(amt*rate*(days/365)*100)/100;
+    var total=Math.round((amt+interest+fee)*100)/100;
+    var fmt=function(a){return new Intl.NumberFormat('en-US',{style:'currency',currency:$("cur").value}).format(a)};
+    var ds=d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    $("daysLine").textContent=days+" days past due (from "+ds+")";
+    $("totalLine").textContent=fmt(total)+" now due";
+    $("breakdown").textContent=fmt(amt)+" principal + "+fmt(interest)+" interest ("+($("rate").value)+"% p.a.)"+(fee?" + "+fmt(fee)+" fee":"");
+    $("sentence").value="As of "+now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})+", invoice #____ has accrued "+fmt(interest)+" in late-payment interest ("+($("rate").value)+"% per annum from the original due date of "+ds+")"+(fee?", plus a "+fmt(fee)+" late fee":"")+". The total amount now due is "+fmt(total)+".";
+    $("result").style.display="block";
+    $("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+    count("intcalcdone");
+  });
+  $("copyBtn").addEventListener("click",function(){
+    $("sentence").select();
+    try{navigator.clipboard.writeText($("sentence").value)}catch(e){document.execCommand("copy")}
+    $("copiedMsg").style.display="inline";setTimeout(function(){$("copiedMsg").style.display="none"},2000);
+  });
+})();
+</script>
+</body>
+</html>
