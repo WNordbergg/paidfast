@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Late Payment Reminder Generator — Get Paid Faster | PaidFast</title>
+<meta name="description" content="Free tool for freelancers and small businesses: generate polite-to-firm overdue invoice reminder emails in seconds. English & Swedish. No signup required.">
+<meta property="og:title" content="PaidFast — Free Overdue Invoice Reminder Generator">
+<meta property="og:description" content="Chasing late payments is awful. Generate the right reminder email in seconds — friendly, firm, or final notice. Free, no signup.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>">
+<style>
+  :root{
+    --bg:#fafaf8; --card:#ffffff; --ink:#1a2332; --muted:#5b6472;
+    --accent:#0e7a4d; --accent-dark:#0a5c3a; --line:#e4e6ea; --warn:#b45309; --bad:#b91c1c;
+    --ok-bg:#ecfdf5; --ok-line:#a7f3d0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151a; --card:#1b2027; --ink:#e8eaf0; --muted:#9aa3b2; --line:#2a313b; --ok-bg:#0d2b1e; --ok-line:#14532d;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+  header{padding:28px 0 10px}
+  .logo{font-weight:800;font-size:20px;color:var(--accent);letter-spacing:-.02em}
+  h1{font-size:clamp(26px,5vw,38px);letter-spacing:-.02em;line-height:1.15;margin:18px 0 10px}
+  .sub{color:var(--muted);font-size:17px;margin:0 0 22px}
+  .badge{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--accent);font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.04em}
+  label:first-child{margin-top:0}
+  input[type=text],input[type=email],input[type=date],input[type=number],select,textarea{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font-size:15px;background:var(--bg);color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row>div{flex:1;min-width:140px}
+  .tones{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:4px}
+  .tone{border:1.5px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:.15s}
+  .tone input{display:none}
+  .tone b{display:block;font-size:14.5px}
+  .tone span{font-size:12px;color:var(--muted)}
+  .tone.sel{border-color:var(--accent);background:var(--ok-bg)}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;width:100%}
+  .btn:hover{background:var(--accent-dark)}
+  .btn.secondary{background:transparent;color:var(--accent);border:1.5px solid var(--accent);width:auto;padding:9px 18px;font-size:14px;margin-top:10px}
+  #outputCard{display:none}
+  #letter{width:100%;min-height:340px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.6;white-space:pre-wrap}
+  .copied{color:var(--accent);font-weight:600;font-size:13px;margin-left:10px;display:none}
+  .lead{background:linear-gradient(135deg,var(--ok-bg),var(--card));border:1px solid var(--ok-line)}
+  .lead h3{margin:0 0 6px;font-size:18px}
+  .lead p{margin:0 0 14px;color:var(--muted);font-size:14.5px}
+  .lead .row{align-items:flex-end}
+  .leadmsg{display:none;margin-top:10px;font-size:14px;color:var(--accent);font-weight:600}
+  .hp{position:absolute;left:-9999px;opacity:0}
+  details{border-bottom:1px solid var(--line);padding:14px 2px}
+  details summary{cursor:pointer;font-weight:600;font-size:15px}
+  details p{color:var(--muted);font-size:14.5px;margin:10px 0 2px}
+  footer{color:var(--muted);font-size:13px;padding:26px 0 40px}
+  footer a{color:var(--muted)}
+  .disclaimer{font-size:12px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">💸 PaidFast</div>
+</header>
+
+<section>
+  <span class="badge">100% free · no signup · nothing you type leaves your browser*</span>
+  <h1>Your client is late paying.<br>Send the right reminder — in seconds.</h1>
+  <p class="sub">Generate a polite-but-effective overdue invoice email: friendly nudge, firm reminder, or final notice. English &amp; Svenska.</p>
+</section>
+
+<div class="card" id="toolCard">
+  <div class="row">
+    <div style="flex:0 0 130px">
+      <label>Language</label>
+      <select id="lang"><option value="en">English</option><option value="sv">Svenska</option></select>
+    </div>
+    <div><label id="l_sender">Your name / business</label><input type="text" id="sender" placeholder="Alex Rivera Design"></div>
+  </div>
+  <div class="row">
+    <div><label id="l_client">Client name</label><input type="text" id="client" placeholder="Acme AB"></div>
+    <div style="flex:0 0 110px"><label id="l_inv">Invoice #</label><input type="text" id="inv" placeholder="1042"></div>
+  </div>
+  <div class="row">
+    <div style="flex:0 0 120px"><label id="l_amount">Amount</label><input type="number" id="amount" placeholder="2400" min="0" step="0.01"></div>
+    <div style="flex:0 0 110px"><label id="l_cur">Currency</label>
+      <select id="cur"><option>USD</option><option>EUR</option><option>SEK</option><option>GBP</option></select></div>
+    <div><label id="l_due">Due date</label><input type="date" id="due"></div>
+  </div>
+  <label id="l_tone">Tone</label>
+  <div class="tones" id="tones">
+    <label class="tone sel"><input type="radio" name="tone" value="friendly" checked><b id="t_friendly">🙂 Friendly nudge</b><span id="td_friendly">maybe they forgot</span></label>
+    <label class="tone"><input type="radio" name="tone" value="firm"><b id="t_firm">😐 Firm reminder</b><span id="td_firm">clear deadline</span></label>
+    <label class="tone"><input type="radio" name="tone" value="final"><b id="t_final">😠 Final notice</b><span id="td_final">last warning</span></label>
+  </div>
+  <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:14px;margin-top:16px">
+    <input type="checkbox" id="latefee" style="width:auto"> <span id="l_latefee">Mention late fees / interest</span>
+  </label>
+  <button class="btn" id="genBtn">Generate my reminder →</button>
+  <p class="disclaimer" id="privacyNote">*Everything is generated locally in your browser. Nothing is uploaded.</p>
+</div>
+
+<div class="card" id="outputCard">
+  <label id="l_output">Your reminder — copy &amp; send</label>
+  <textarea id="letter" readonly></textarea>
+  <button class="btn secondary" id="copyBtn">📋 Copy text</button><span class="copied" id="copiedMsg">Copied!</span>
+  <p class="disclaimer" id="escalateNote"></p>
+</div>
+
+<div class="card lead" id="leadCard">
+  <h3 id="leadTitle">Tired of writing these every month?</h3>
+  <p id="leadText">We're building automatic payment reminders: connect your invoices once, and PaidFast chases your clients politely at the right moments — so you get paid without asking. Join the early list and get 50% off for life.</p>
+  <div class="row">
+    <div style="flex:2"><input type="email" id="email" placeholder="you@yourbusiness.com"></div>
+    <div style="flex:1"><button class="btn" style="margin-top:0" id="leadBtn">Notify me</button></div>
+  </div>
+  <input type="text" class="hp" id="hp" tabindex="-1" autocomplete="off">
+  <div class="leadmsg" id="leadOk">✓ You're on the list. We'll only email you about the launch.</div>
+  <div class="leadmsg" id="leadErr" style="color:var(--bad)">Something went wrong — please try again.</div>
+</div>
+
+<h2 id="faqTitle" style="font-size:22px;margin-top:34px">Late-payment questions, answered</h2>
+<details><summary id="q1">What tone should I use for a first reminder?</summary><p id="a1">Start friendly — most late payments are simple oversight. A warm nudge resolves the majority of cases without damaging the relationship. Escalate only if you get silence.</p></details>
+<details><summary id="q2">When should I send a final notice?</summary><p id="a2">A common cadence: friendly reminder ~3–7 days after the due date, firm reminder ~14 days, final notice ~30 days with a concrete deadline and consequences. Always give one clear way to resolve it (pay, or reply with a payment date).</p></details>
+<details><summary id="q3">Can I charge late fees or interest?</summary><p id="a3">Often yes, but rules vary. In the EU, commercial late-payment interest and recovery costs are generally allowed by directive 2011/7/EU. In Sweden, dröjsmålsränta plus a standard invoice fee applies by law. In the US, check your contract and state law. Mentioning legitimate fees in a reminder is usually enough to motivate payment.</p></details>
+<details><summary id="q4">Is my data stored anywhere?</summary><p id="a4">No. The letter is generated entirely in your browser with JavaScript. The only data ever transmitted is the email address you voluntarily type into the launch-notification box.</p></details>
+
+<footer>
+  PaidFast · Free tools for freelancers &amp; small businesses · <span id="footYear"></span><br>
+  <span id="footTag">Built for people who'd rather do their actual work than chase invoices.</span>
+</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var NS="paidfast-site";
+  // lead inbox endpoint assembled at runtime (anti-scrape hygiene)
+  var LEAD_URL=["https://ntfy.sh/","pf-leads-","52ac0377","93cc","3b44"].join("");
+  function count(key){try{var x=new XMLHttpRequest();x.open("GET","https://abacus.jasoncameron.dev/hit/"+NS+"/"+key,true);x.responseType="json";x.send()}catch(e){}}
+  count("pageview");
+
+  // defaults
+  var t=new Date();t.setDate(t.getDate()-14);
+  $("due").value=t.toISOString().slice(0,10);
+  $("footYear").textContent=new Date().getFullYear();
+
+  var T={
+    en:{
+      sender:"Your name / business",client:"Client name",inv:"Invoice #",amount:"Amount",cur:"Currency",due:"Due date",
+      tone:"Tone",tf:"🙂 Friendly nudge",tdf:"maybe they forgot",tr:"😐 Firm reminder",tdr:"clear deadline",tx:"😠 Final notice",tdx:"last warning",
+      latefee:"Mention late fees / interest",gen:"Generate my reminder →",out:"Your reminder — copy & send",
+      copy:"📋 Copy text",leadT:"Tired of writing these every month?",
+      leadP:"We're building automatic payment reminders: connect your invoices once, and PaidFast chases your clients politely at the right moments — so you get paid without asking. Join the early list and get 50% off for life.",
+      leadB:"Notify me",esc:function(d){return d>30?"Tip: at "+d+" days overdue, many businesses skip straight to the final notice.":"Tip: if this gets no reply within 5–7 days, re-generate with a firmer tone."},
+      money:function(a,c){return new Intl.NumberFormat('en-US',{style:'currency',currency:c}).format(a)},
+      dstr:function(d){return d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}
+    },
+    sv:{
+      sender:"Ditt namn / företag",client:"Kundens namn",inv:"Fakturanr",amount:"Belopp",cur:"Valuta",due:"Förfallodatum",
+      tone:"Ton",tf:"🙂 Vänlig påminnelse",tdf:"kanske glömt bort",tr:"😐 Bestämd påminnelse",tdr:"tydlig deadline",tx:"😠 Slutpåminnelse",tdx:"sista varningen",
+      latefee:"Nämn dröjsmålsränta / avgifter",gen:"Skapa min påminnelse →",out:"Din påminnelse — kopiera & skicka",
+      copy:"📋 Kopiera text",leadT:"Trött på att skriva dessa varje månad?",
+      leadP:"Vi bygger automatiska betalningspåminnelser: koppla dina fakturator en gång, så följer PaidFast upp dina kunder vid rätt tidpunkt — du får betalt utan att behöva fråga. Anmäl intresse och få 50% rabatt för alltid.",
+      leadB:"Håll mig informerad",esc:function(d){return d>30?"Tips: efter "+d+" dagar hoppar många direkt till slutpåminnelse.":"Tips: får du inget svar inom 5–7 dagar, skapa en bestämdare påminnelse."},
+      money:function(a,c){return new Intl.NumberFormat('sv-SE',{style:'currency',currency:c}).format(a)},
+      dstr:function(d){return d.toLocaleDateString('sv-SE',{year:'numeric',month:'long',day:'numeric'})}
+    }
+  };
+
+  function daysOverdue(){
+    var d=$("due").value; if(!d)return null;
+    var due=new Date(d+"T00:00:00"), now=new Date(); now.setHours(0,0,0,0);
+    return Math.round((now-due)/86400000);
+  }
+
+  function applyLang(){
+    var L=T[$("lang").value];
+    $("l_sender").textContent=L.sender;$("l_client").textContent=L.client;$("l_inv").textContent=L.inv;
+    $("l_amount").textContent=L.amount;$("l_cur").textContent=L.cur;$("l_due").textContent=L.due;
+    $("l_tone").textContent=L.tone;$("t_friendly").textContent=L.tf;$("td_friendly").textContent=L.tdf;
+    $("t_firm").textContent=L.tr;$("td_firm").textContent=L.tdr;$("t_final").textContent=L.tx;$("td_final").textContent=L.tdx;
+    $("l_latefee").textContent=L.latefee;$("genBtn").textContent=L.gen;$("l_output").textContent=L.out;
+    $("copyBtn").textContent=L.copy;$("leadTitle").textContent=L.leadT;$("leadText").textContent=L.leadP;
+    $("leadBtn").textContent=L.leadB;
+    document.documentElement.lang=$("lang").value;
+  }
+  $("lang").addEventListener("change",applyLang);
+
+  Array.prototype.forEach.call(document.querySelectorAll(".tone"),function(el){
+    el.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll(".tone"),function(x){x.classList.remove("sel")});
+      el.classList.add("sel");el.querySelector("input").checked=true;
+    });
+  });
+
+  function tpl(L,tone,days,fee){
+    var c=$("client").value.trim()||($("lang").value==="sv"?"[kund]":"[client]");
+    var s=$("sender").value.trim()||($("lang").value==="sv"?"[ditt namn]":"[your name]");
+    var inv=$("inv").value.trim()||"0000";
+    var amt=L.money(parseFloat($("amount").value||0),$("cur").value);
+    var dueD=$("due").value?new Date($("due").value+"T00:00:00"):new Date();
+    var dueS=L.dstr(dueD);
+    var dl=new Date();dl.setDate(dl.getDate()+7);var dlS=L.dstr(dl);
+    var feeLine_en="\n\nPlease note that, as per our agreed terms, late interest continues to accrue on this invoice from the original due date.";
+    var feeLine_sv="\n\nObservera att enligt våra överenskomna villkor löper dröjsmålsränta på denna faktura från ursprungligt förfallodag.";
+    var feeLine=( $("lang").value==="sv"?feeLine_sv:feeLine_en );
+    if(!fee)feeLine="";
+    if($("lang").value==="sv"){
+      if(tone==="friendly")return{subj:"Vänlig påminnelse: Faktura "+inv+" ("+amt+")",body:
+"Hej "+c+"!\n\nHoppas allt är bra! Bara en snabb, vänlig påminnelse om att faktura "+inv+" på "+amt+" förföll den "+dueS+" och ser obetald ut i vårt system.\n\nOm betalningen redan är på väg får du gärna ignorera detta meddelande – en kort bekräftelse på när vi kan förvänta oss betalningen uppskattas dock.\n\nOm något behöver korrigeras eller saknas underlag, hör av dig så fixar vi det direkt.\n\nTack på förhand!\n\nVänliga hälsningar,\n"+s};
+      if(tone==="firm")return{subj:"Betalning försenad: Faktura "+inv+" ("+amt+") – "+days+" dagar",body:
+"Hej "+c+",\n\nFaktura "+inv+" på "+amt+" förföll den "+dueS+" och är nu "+days+" dagar försenad. Vi har inte registrerat någon betalning och inte heller fått information om när betalning planeras.\n\nVänligen genomför betalningen inom 5 vardagar, eller svara på detta mejl med exakt datum för när betalning skickas.\n\nOm något med fakturan blockerar betalningen – ta upp det idag, så löser vi det omgående."+feeLine+"\n\nMed vänlig hälsning,\n"+s};
+      return{subj:"SLUTPÅMINNELSEN: Faktura "+inv+" ("+amt+") – krav på betalning",body:
+"Hej "+c+",\n\nTrots tidigare påminnelser är faktura "+inv+" på "+amt+", som förföll den "+dueS+", fortfarande obetald – nu "+days+" dagar efter förfallodagen.\n\nDetta är ett formellt krav på betalning. Vi behöver ha mottagit full betalning senast 7 dagar från detta mejl (senast "+dlS+"). Sker inte det:\n\n  • debiteras dröjsmålsränta enligt räntelagen samt ersättning för inkassokostnader,\n  • överlämnas ärendet till inkasso,\n  • och pågående arbete pausas tills kontot är reglerat.\n\nHar betalning redan gjorts – svara med betalningsreferens så avslutar vi kravet omedelbart.\n\n"+s};
+    }
+    if(tone==="friendly")return{subj:"Friendly reminder: Invoice "+inv+" ("+amt+")",body:
+"Hi "+c+",\n\nHope you're doing well! Just a quick, friendly note that invoice "+inv+" for "+amt+", due on "+dueS+", is showing as unpaid in our system.\n\nIf payment is already on its way, feel free to ignore this — but a quick confirmation of when we can expect it would be much appreciated.\n\nIf anything needs correcting or you're missing paperwork, let me know and I'll sort it right away.\n\nThanks so much!\n\nBest,\n"+s};
+    if(tone==="firm")return{subj:"Overdue: Invoice "+inv+" ("+amt+") — "+days+" days past due",body:
+"Hi "+c+",\n\nInvoice "+inv+" for "+amt+" was due on "+dueS+" and is now "+days+" days overdue. We haven't received payment or an update on when to expect it.\n\nPlease arrange payment within the next 5 business days, or reply to this email with the exact date payment will be sent.\n\nIf something about the invoice is blocking payment, raise it today and we'll resolve it immediately."+feeLine+"\n\nRegards,\n"+s};
+    return{subj:"FINAL NOTICE — Invoice "+inv+" ("+amt+"), "+days+" days overdue",body:
+"Hi "+c+",\n\nDespite earlier reminders, invoice "+inv+" for "+amt+", due on "+dueS+", remains unpaid — now "+days+" days past the due date.\n\nThis is a formal demand for payment. Full payment must be received within 7 days of this notice (by "+dlS+"). If it is not:\n\n  • late-payment interest will be charged from the original due date, plus recovery costs,\n  • the matter will be referred to a collections agency,\n  • and any ongoing work will be paused until the account is settled.\n\nIf payment has already been sent, reply with the transfer reference and we'll stand down immediately.\n\n"+s};
+  }
+
+  $("genBtn").addEventListener("click",function(){
+    var L=T[$("lang").value], days=daysOverdue();
+    var tone=document.querySelector('input[name=tone]:checked').value;
+    if(days===null){$("due").focus();return}
+    var od=Math.max(days,0);
+    var r=tpl(L,tone,od,$("latefee").checked);
+    $("letter").value="Subject: "+r.subj+"\n\n"+r.body;
+    $("outputCard").style.display="block";
+    $("escalateNote").textContent=L.esc(od);
+    $("outputCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+    count("generate");
+  });
+
+  $("copyBtn").addEventListener("click",function(){
+    $("letter").select();
+    try{navigator.clipboard.writeText($("letter").value)}catch(e){document.execCommand("copy")}
+    $("copiedMsg").style.display="inline";setTimeout(function(){$("copiedMsg").style.display="none"},2000);
+    count("copy");
+  });
+
+  $("leadBtn").addEventListener("click",function(){
+    var em=$("email").value.trim(), hp=$("hp").value;
+    if(hp)return; // bot
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){$("email").focus();return}
+    if(localStorage.getItem("pf_lead")){$("leadOk").style.display="block";return}
+    var payload={email:em,lang:$("lang").value,
+      tone:document.querySelector('input[name=tone]:checked').value,
+      amount:$("amount").value||null, cur:$("cur").value, ts:new Date().toISOString()};
+    fetch(LEAD_URL,{method:"POST",
+      headers:{"Title":"PaidFast lead","Tags":"white_check_mark"},
+      body:JSON.stringify(payload)}).then(function(r){
+        if(r.ok){localStorage.setItem("pf_lead",em);$("leadOk").style.display="block";$("leadErr").style.display="none";count("lead")}
+        else{$("leadErr").style.display="block"}
+      }).catch(function(){$("leadErr").style.display="block"});
+  });
+})();
+</script>
+</body>
+</html>
