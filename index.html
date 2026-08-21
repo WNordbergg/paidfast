@@ -146,6 +146,8 @@
   var t=new Date();t.setDate(t.getDate()-14);
   $("due").value=t.toISOString().slice(0,10);
   $("footYear").textContent=new Date().getFullYear();
+  // deep-link language: /#sv or /#en
+  if(location.hash==="#sv"||location.hash==="#en"){$("lang").value=location.hash.slice(1);applyLang();}
 
   var T={
     en:{
